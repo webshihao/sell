@@ -1,0 +1,16 @@
+@media (-webkit-min-device-pixel-radio: 1.5),(min-device-pixel-radio: 1.5) {
+    .border-1px {
+        &:after {
+            -webkit-transform: scale(0.7);
+            transform: scale(0.7);
+        }
+    }
+}
+@media (-webkit-min-device-pixel-radio: 2),(min-device-pixel-radio: 2) {
+    .border-1px {
+        &:after {
+            -webkit-transform: scale(0.5);
+            transform: scale(0.5);
+        }
+    }
+}
