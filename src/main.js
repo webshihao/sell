@@ -4,11 +4,13 @@ import App from './App'
 import goods from './components/goods/goods.vue'
 import ratings from './components/ratings/ratings.vue'
 import seller from './components/seller/seller.vue'
+import VueResource from 'vue-resource'
 
-import './common/css/mixin.scss'
+import './common/css/index.scss'
 
 Vue.use(VueRouter)
 
+Vue.use(VueResource);
 let app = Vue.extend(App);
 let router = new VueRouter();
 router.map({
