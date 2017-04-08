@@ -16,7 +16,7 @@
                     <span class="text">{{seller.supports[0].description}}</span>
                 </div>
             </div>
-            <div class="support-count" v-if="seller.supports">
+            <div class="support-count" v-if="seller.supports" @click="showDetail">
                 <span class="count">{{seller.supports.length}}个</span>
                 <i class="icon-keyboard_arrow_right"></i>
             </div>
@@ -28,53 +28,68 @@
         <div class="background">
             <img :src="seller.avatar" width="100%" height="100%">
         </div>
-        <div class="detail">
-            <div class="detail_wrapper">
-                <h2>{{seller.name}}</h2>
-                <div class="star_arr">
-                    <span class="star_item on"></span>
-                    <span class="star_item on"></span>
-                    <span class="star_item on"></span>
-                    <span class="star_item on"></span>
-                    <span class="star_item off"></span>
-                </div>
-                <div class="title">
-                    <div class="line left"></div>
-                    <div class="text">优惠信息</div>
-                    <div class="line right"></div>
-                </div>
-                <ul class="supports" v-if="seller.supports">
-                    <li v-for="support in seller.supports">
-                        <span class="icon" :class="classMap[support.type]"></span>
-                        <span class="text">{{support.description}}</span>
-                    </li>
-                </ul>
-                <div class="title">
-                    <div class="line left"></div>
-                    <div class="text">商家公告</div>
-                    <div class="line right"></div>
-                </div>
-                <div class="bulletin_desc">
-                    {{seller.bulletin}}
-                </div>
-                <div class="background">
-                    <!-- <img :src="seller.avatar" width="100%" height="100%"> -->
+        <div class="detail" v-show="detailShow" transition="fade">
+            <div class="detail_wrapper clearfix">
+                <div class="detail-main">
+                    <h1 class="name">{{seller.name}}</h1>
+                    <div class="star-wrapper">
+                        <star :size="48" :score="4.5"></star>
+                    </div>
+                    <div class="title">
+                        <div class="line"></div>
+                        <div class="text">优惠信息</div>
+                        <div class="line"></div>
+                    </div>
+                    <ul class="supports" v-if="seller.supports">
+                        <li class="support-item" v-for="support in seller.supports">
+                            <span class="icon" :class="classMap[support.type]"></span>
+                            <span class="text">{{support.description}}</span>
+                        </li>
+                    </ul>
+                    <div class="title">
+                        <div class="line"></div>
+                        <div class="text">商家公告</div>
+                        <div class="line"></div>
+                    </div>
+                    <div class="bulletin">
+                        <p class="content">{{seller.bulletin}}</p>
+                    </div>
+
                 </div>
             </div>
-            <div class="close">X</div>
+            <div class="detail-close" @click="hideDetail">
+                <i class="icon-close"></i>
+            </div>
         </div>
 	</div>
 </template>
 
 <script>
+    import star from "components/star/star.vue";
 	export default {
 		props: {
             seller: {
 
             }
         },
+        data() {
+            return {
+                detailShow: false
+            }
+        },
+        methods: {
+            showDetail() {
+                this.detailShow = true;
+            },
+            hideDetail() {
+                this.detailShow = false;
+            }
+        },
         created() {
             this.classMap= ['decrease','discount','guarantee','invoice','special']
+        },
+        components: {
+            star
         }
 	}
 </script>
@@ -224,118 +239,115 @@
             top: 0;
             z-index: 100;
             overflow: auto;
-            background: rgba(7,17,27,0.8);
+            transition: all .8s;
+            backdrop-filter: blur(10px);
+            &.fade-transition {
+                opacity: 1;
+                background: rgba(7,17,27,0.8);
+            }
+            &.fade-enter,&.fade-leave {
+                opacity: 0;
+                background: rgba(7,17,27,0);
+            }
             .detail_wrapper {
-                padding: 64px 36px 32px 36px;
-                height: 100%;
-                display: inline-block;
-                h2 {
-                    font-size: 16px;
-                    font-weight: 700;
-                    line-height: 16px;
-                    text-align: center;
-                    color: rgb(255,255,255);
-                }
-                .star_arr {
-                    height: 48px;
-                    margin-top: 16px;
-                    margin-bottom: 28px;
-                    text-align: center;
-                    .star_item {
-                        display: inline-block;
-                        width: 24px;
-                        height: 24px;
-                        
-                        background-size: 100%;
-                        background-repeat: no-repeat;
-                        &.on {
-                            @include bg-image('./star48_on');
-                        }
-                        &.off {
-                            @include bg-image('./star48_off');
-                        }
+                width: 100%;
+                min-height: 100%;
+                .detail-main {
+                    margin-top: 64px;
+                    padding-bottom: 64px;
+                    .name {
+                        font-size: 16px;
+                        font-weight: 700;
+                        line-height: 16px;
+                        text-align: center;
+                        color: rgb(255,255,255);
                     }
-                }
-                .title {
-                    height: 30px;
-                    line-height: 30px;
-                    text-align: center;
-                    position: relative;
-                    .line {
-                        border-top: 1px solid #f00;
-                        width: 112px;
-                        display: inline-block;
-                        position: absolute;
-                        top: 50%;
-                        &.left {
-                            left: 0;
-                        }
-                        &.right {
-                            right: 0;
-                        }
+                    .star-wrapper {
+                        margin-top: 18px;
+                        padding: 2px 0;
+                        text-align: center;
                     }
-                    .text {
-                        display: inline-block;
-                        margin:0 12px;
-                    }
-                }
-                .supports {
-                    padding-top: 24px;
-                    padding-bottom: 28px;
-                    li {
-                        margin-left: 12px;
-                        margin-bottom: 12px;
-                        .icon {
-                            display: inline-block;
-                            width: 12px;
-                            height: 12px;
-                            margin-right: 4px;
-                            background-size: 100%;
-                            background-repeat: no-repeat;
-                            &.decrease {
-                                @include bg-image('decrease_1');
-                            }
-                            &.discount {
-                                @include bg-image('discount_1');
-                            }
-                            &.guarantee {
-                                @include bg-image('guarantee_1');
-                            }
-                            &.invoice {
-                                @include bg-image('invoice_1');
-                            }
-                            &.special {
-                                @include bg-image('special_1');
-                            }
+                    .title {
+                        display: flex;
+                        width: 80%;
+                        margin: 28px auto 24px auto;
+                        .line {
+                            border-bottom: 1px solid rgba(255,255,255,0.2);
+                            flex: 1;
+                            position: relative;
+                            top: -6px;
                         }
                         .text {
-                            font-size: 12px;
-                            line-height: 12px;
-                            vertical-align: top;
+                            font-size: 14px;
+                            font-weight: 700;
+                            padding:0 12px;
                         }
                     }
-                    
+                    .supports {
+                        width: 80%;
+                        margin: 0 auto;
+                        .support-item {
+                            padding: 0 12px;
+                            margin-bottom: 12px;
+                            .icon {
+                                display: inline-block;
+                                width: 16px;
+                                height: 16px;
+                                vertical-align: top;
+                                margin-right: 6px; 
+                                background-size: 100%;
+                                background-repeat: no-repeat;
+                                &.decrease {
+                                    @include bg-image('decrease_1');
+                                }
+                                &.discount {
+                                    @include bg-image('discount_1');
+                                }
+                                &.guarantee {
+                                    @include bg-image('guarantee_1');
+                                }
+                                &.invoice {
+                                    @include bg-image('invoice_1');
+                                }
+                                &.special {
+                                    @include bg-image('special_1');
+                                }
+                            }
+                            .text {
+                                font-size: 12px;
+                                line-height: 16px;
+                            }
+                        }
+                        
+                    }
+                    .bulletin {
+                        width: 80%;
+                        margin: 0 auto;
+                        .content {
+                            padding: 0 12px;
+                            font-size: 12px;
+                            line-height: 24px;
+                        }
+                    }
+                    .background {
+                        position: absolute;
+                        top: 0;
+                        left: 0;
+                        width: 100%;
+                        height: 100%;
+                        z-index: -1;
+                        filter: blur(10px);
+                    }
                 }
-                .bulletin_desc {
-                    padding: 24px 12px 0 12px;
-                    font-size: 12px;
-                    line-height: 24px;
-                }
-                .background {
-                    position: absolute;
-                    top: 0;
-                    left: 0;
-                    width: 100%;
-                    height: 100%;
-                    z-index: -1;
-                    filter: blur(10px);
-                }
+
             }
-            .close {
+            .detail-close {
+                width: 32px;
+                height: 32px;
                 font-size: 32px;
-                position: absolute;
-                left: 50%;
-                bottom: 32px;
+                position: relative;
+                margin: -64px auto 0 auto;
+                clear: both;
             }
         }
     }
